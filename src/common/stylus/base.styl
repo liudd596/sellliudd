@@ -2,13 +2,13 @@ body, html
   line-height : 1
   font-weight : 200
   font-family : 'PingFang SC', 'STHEITISC-Light','Helvetica-Light',Arial,sans-serif
-.claerfix
+.clearfix
   display : inline-block
   &:after
     display : block
     contain : " "
     clear : both
-    visibility : hidden
+    visibility : hidden // 将元素隐藏，但是在网页中该占的位置还是占着
     height: 0
     line-height : 0
 @media (-webkit-min-device-pixel-ratio: 1.5),(min-device-pixel-ratio: 1.5)

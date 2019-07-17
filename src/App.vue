@@ -18,8 +18,8 @@
   </div>
 </template>
 
-<script>
-import header from './components/header/hearder.vue';
+<script type="text/ecmascript-6">
+import header from 'components/header/hearder';
 
 const ERR_OK = 0;
 

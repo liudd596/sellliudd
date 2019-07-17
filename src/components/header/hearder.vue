@@ -30,40 +30,74 @@
       <div class="background">
           <img :src="seller.avatar" alt="" width="100%" height="100%">
       </div>
-      <div class="detail" v-if="detailShow">
-          <div class="detail-wrapper claerfix">
-            <div class="detail-main">
-              <div class="name">{{seller.name}}</div>
+      <transition name="fade">
+          <div v-if="detailShow" class="detail">
+            <div class="detail-wrapper clearfix">
+              <div class="detail-main">
+                <div class="name">{{seller.name}}</div>
+                <div class="star-wrapper">
+                  <!--星星评分-->
+                  <star :size="48" :score="seller.score"></star>
+                </div>
+                <div class="title">
+                  <div class="line"></div>
+                  <div class="text">优惠信息</div>
+                  <div class="line"></div>
+                </div>
+                <ul v-if="seller.supports" class="supports">
+                  <li class="support-item" v-for="(item,index) in seller.supports">
+                    <span class="icon" :class="classMap[seller.supports[index].type]"></span>
+                    <span class="text">{{seller.supports[index].description}}</span>
+                  </li>
+                </ul>
+                <div class="title">
+                  <div class="line"></div>
+                  <div class="text">商品公告</div>
+                  <div class="line"></div>
+                </div>
+                <div class="bulletin">
+                  <p class="content">{{seller.bulletin}}</p>
+                </div>
+              </div>
+            </div>
+            <div class="detail-close" @click="hideDetail">
+              <i class="icon-close"></i>
             </div>
           </div>
-          <div class="detail-close">
-            <i class="icon-close"></i>
-          </div>
-      </div>
+      </transition>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
-  export default {
-    props: {
-      seller: {
-        type: Object
-      }
-    },
-    data() {
-      return {
-        detailShow: false
-      };
-    },
-    methods: {
-      showDetail() {
-        this.detailShow = true;
-      }
-    },
-    created () {
-      this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee'];
+import star from '../star/star';
+
+export default {
+  props: { // 通过props接收传递过来的seller数据
+    seller: {
+      type: Object // 验证props类型，传入的数据不符合规格，Vue 会发出警告
     }
-  };
+  },
+  data() {
+    return {
+      detailShow: false
+    };
+  },
+  methods: {
+    showDetail() {
+      this.detailShow = true;
+    },
+    hideDetail() {
+      this.detailShow = false;
+    }
+  },
+  created () {
+    this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee'];
+  },
+  components: {
+    // 注册组件
+    'star': star
+  }
+};
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
@@ -99,7 +133,7 @@
            .name
              margin-left: 6px
              font-size: 16px
-             font-weight : bold
+             font-weight : 700
              line-height : 18px
          .description
            font-size: 12px
@@ -152,8 +186,8 @@
        height: 28px
        padding: 0 22px 0 12px
        line-height : 28px
-       white-space : nowrap
        overflow : hidden
+       white-space : nowrap  // 规定段落中的文本不进行换行
        text-overflow : ellipsis // 对溢出文本显示省略号
        .bulletin-title
          bg-image("bulletin")
@@ -189,6 +223,13 @@
        width : 100%
        height: 100%
        overflow : auto
+       transition : all 0.5s
+       &.fade-transition
+         opacity: 1
+         background : rgba(7,17,27,0.8)
+       &.fade-enter, &.fade-leave
+         opacity : 0
+         background : rgba(7,17,27,0)
        .detail-wrapper
          min-height: 100%
          width : 100%
@@ -199,11 +240,65 @@
              text-align: center
              font-size : 16px
              font-weight : 700
-       .detail-close
-         position : relative
-         width : 32px
-         height: 32px
-         margin : -64px auto 0
-         clear: both
-         font-size : 32px
+             line-height : 16px
+           .star-wrapper
+             margin-top : 16px
+             padding : 2px 0
+             text-align : center
+           .title
+             display : flex
+             width : 80%
+             margin : 30px auto 24px
+             .line
+               flex: 1 // 等分布局  Postcss 会自动添加webkit兼容信息
+               position : relative
+               top: -6px
+               border-bottom : 1px solid rgba(255,255,255,0.2)
+             .text
+               padding: 0 12px
+               font-size : 14px
+               font-weight : 700
+           .supports
+             width : 80%
+             margin: 0 auto
+             .support-item
+               padding: 0 12px
+               margin-bottom : 12px
+               line-height : 12px
+               .icon
+                 display : inline-block
+                 width : 16px
+                 height: 16px
+                 vertical-align : top
+                 margin-right : 6px
+                 background-size : 16px 16px
+                 background-repeat : no-repeat
+                 &.decrease
+                   bg-image('decrease_2')
+                 &.discount
+                   bg-image('discount_2')
+                 &.guarantee
+                   bg-image('guarantee_2')
+                 &.invoice
+                   bg-image('invoice_2')
+                 &.special
+                   bg-image('special_2')
+               .text
+                 font-size: 12px
+                 font-weight : 200
+                 line-height : 16px
+           .bulletin
+             width : 80%
+             margin :0 auto
+             .content
+               padding : 0 12px
+               font-size : 12px
+               line-height : 24px
+    .detail-close
+      position : relative
+      width : 32px
+      height: 32px
+      margin : -64px auto 0
+      clear: both
+      font-size : 32px
 </style>
