@@ -143,8 +143,8 @@ export default {
            margin-bottom : 2px
            .icon
              display : inline-block
-             width: 12px;
-             height: 12px;
+             width: 12px
+             height: 12px
              margin-right : 4px
              background-size : 12px 12px
              background-repeat : no-repeat
