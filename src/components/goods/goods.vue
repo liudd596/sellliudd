@@ -1,33 +1,33 @@
 <template>
   <div class="goods">
-    <div class="menu-wrapper">
+    <div class="menu-wrapper" ref="menuWrapper">
       <ul>
-        <li v-for="item in goods" class="menu-item">
+        <li v-for="(item, index) in goods" class="menu-item" :class="{'current' : currentIndex === index}" @click="selectMenu(index, $event)">
           <span class="text border-1px">
             <span v-show="item.type>0" class="icon" :class="classMap[item.type]"></span>{{item.name}}
           </span>
         </li>
       </ul>
     </div>
-    <div class="foods-wrapper">
+    <div class="foods-wrapper" ref="foodsWrapper">
       <ul>
-        <li v-for="item in goods" class="food-list">
+        <li v-for="item in goods" class="food-list food-list-hook">
           <h1 class="title">{{item.name}}</h1>
           <ul>
             <li v-for="food in item.foods" class="food-item">
               <div class="icon">
-                <img :src="food.icon" alt="">
+                <img :src="food.icon" alt="" width="57" height="57">
               </div>
               <div class="content">
                 <h2 class="name">{{food.name}}</h2>
                 <p class="desc">{{food.description}}</p>
                 <div class="extra">
-                  <span>月售{{food.sellerCount}}份</span>
+                  <span class="count">月售{{food.sellerCount}}份</span>
                   <span>好评率{{food.rating}}</span>
                 </div>
                 <div class="price">
-                  <span>￥{{food.price}}</span>
-                  <span v-show="food.oldPrice">￥{{food.oldPrice}}</span>
+                  <span class="now">￥{{food.price}}</span>
+                  <span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
               </div>
             </li>
@@ -35,10 +35,14 @@
         </li>
       </ul>
     </div>
+    <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+import BScroll from 'better-scroll';
+import shopcart from '../../components/shopcart/shopcart';
+
 const ERR_OK = 0;
 
 export default {
@@ -49,19 +53,76 @@ export default {
   },
   data() {
     return {
-      goods: []
+      goods: [], // 一开始goods为空
+      listHeight: [],
+      scrollY: 0
     };
   },
-  created () {
+  computed: {
+    currentIndex() { // 计算到达哪个区域的区间的时候的对应的索引值
+      for (let i = 0; i < this.listHeight.length; i++) {
+        let height1 = this.listHeight[i]; // 当前menu子块的高度
+        let height2 = this.listHeight[i + 1]; // 下一个menu子块的高度
+        // 滚动到底部的时候,height2为undefined,需要考虑这种情况
+        // 需要确定是在两个menu子块的高度区间
+        if (!height2 || (this.scrollY >= height1 && this.scrollY < height2)) {
+          return i; // 返回这个menu子块的索引
+        }
+      }
+      return 0;
+    }
+  },
+  created () { // 当这个组件被调用的时候，通过后端获得数据赋值给goods
     this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee'];
 
-    this.$http.get('/api/goods').then((response) => {
+    this.$http.get('/api/goods').then((response) => { // '/api/goods'请求的是data.json下的goods数组
       response = response.body;
       if (response.errno === ERR_OK) {
         this.goods = response.data;
-        console.log(this.goods);
+        this.$nextTick(() => { // $nextTick 來确保  Dom变化后  再执行一些事情
+          this._initScroll();
+          this._calculateHeight();
+        });
       }
     });
+  },
+  methods: {
+    selectMenu(index, event) {
+      if (!event._constructed) { // 去掉自带的click事件点击，即pc端直接返回
+        return;
+      }
+      let foodList = this.$refs.foodsWrapper.getElementsByClassName('food-list-hook');
+      // 类似jump to的功能,通过这个方法,跳转到指定的dom
+      let el = foodList[index];
+      this.foodsScroll.scrollToElement(el, 300);
+    },
+    _initScroll() { // 初始化scroll区域
+      this.menuScrol = new BScroll(this.$refs.menuWrapper, {
+        click: true // 结合BScroll的接口使用,是否将click事件传递,默认被拦截了
+      });
+      // 结合BScroll的接口使用,监听scroll事件(实时派发的),并获取鼠标坐标，当滚动时能实时暴露出scroll
+      this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {
+        click: true,
+        probeType: 3 // 结合BScroll的接口使用,3 实时派发scroll事件，探针的作用
+      });
+      // 结合BScroll的接口使用,监听scroll事件(实时派发的),并获取鼠标坐标，当滚动时能实时暴露出scroll
+      this.foodsScroll.on('scroll', (pos) => {
+        this.scrollY = Math.abs(Math.round(pos.y));
+      });
+    },
+    _calculateHeight() {
+      let foodList = this.$refs.foodsWrapper.getElementsByClassName('food-list-hook');
+      let height = 0; // 初始化第一个高度为0
+      this.listHeight.push(height);
+      for (let i = 0; i < foodList.length; i++) {
+        let item = foodList[i]; // 每一个item都是刚才获取的food的每一个doms
+        height += item.clientHeight; // 主要是为了获取每一个foods内部块的高度
+        this.listHeight.push(height);
+      }
+    }
+  },
+  components: {
+    'shopcart': shopcart
   }
 };
 </script>
@@ -88,6 +149,13 @@ export default {
         font-size : 12px
         line-height : 14px
         padding : 0 12px
+        &.current
+          position : relative
+          margin-top : -1px
+          background : #fff
+          font-weight : 700
+          .text
+            border-none()
         .icon
           display : inline-block
           vertical-align : top
@@ -129,19 +197,35 @@ export default {
         border-1px(rgba(7,17,27,0.1))
         &:last-child
           border-none()
+          margin-bottom : 0
         .icon
-          width : 114px
-          height: 114px
+          flex : 0 0 57px
         .content
+          flex : 1
           margin :2px 18px 0 10px
           .name
             font-size : 14px
             color: rgb(7,17,27)
             line-height : 14px
-          .desc,.extra
+            height: 14px
+          .desc, .extra
             font-size : 10px
             color: rgb(147,153,159)
+            height : 10px
             line-height :10px
-            margin : 8px 0 4px
-
+          .desc
+            margin : 8px 0
+          .extra
+            &.count
+              margin-right :12px
+          .price
+            font-weight : 700
+            line-height : 24px
+            .now
+              font-size : 14px
+              color : rgb(240,20,20)
+            .old
+              font-size: 10px
+              text-decoration : line-through // 文字删除线
+              color: rgb(147,153,159)
 </style>

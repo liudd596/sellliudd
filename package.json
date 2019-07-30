@@ -20,7 +20,8 @@
     "vue": "^2.5.2",
     "vue-resource": "^1.5.1",
     "vue-router": "^2.2.0",
-    "webpack-cli": "^3.3.5"
+    "webpack-cli": "^3.3.5",
+    "better-scroll": "^0.1.7"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
