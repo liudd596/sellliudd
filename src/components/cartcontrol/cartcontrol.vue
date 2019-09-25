@@ -76,4 +76,5 @@
     display : inline-block
     color : rgb(0, 160, 220)
     font-size : 24px
+    
 </style>
