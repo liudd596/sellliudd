@@ -21,21 +21,21 @@
     },
     methods: {
       addCart(event) {
-        if(!event._constructed) {
+        if (!event._constructed) {
           return;
         }
         // console.log('click');
-        if(!this.food.count) {
+        if (!this.food.count) {
           Vue.set(this.food, 'count', 1);
         } else {
           this.food.count++;
         }
       },
       decreaseCart(event) {
-        if(!event._constructed) {
+        if (!event._constructed) {
           return;
         }
-        if(this.food.count) {
+        if (this.food.count) {
           this.food.count--;
         }
       }
@@ -76,5 +76,4 @@
     display : inline-block
     color : rgb(0, 160, 220)
     font-size : 24px
-    
 </style>

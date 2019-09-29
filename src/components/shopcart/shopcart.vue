@@ -18,7 +18,7 @@
         </div>
       </div>
       <div class="ball-container">
-        <transition name="drop" v-for="ball in balls" v-show="ball.show" class="ball">
+        <transition name="drop" v-for="(ball,index) in balls" v-show="ball.show" class="ball" :key="index">
           <div class="inner"></div>
         </transition>
       </div>
@@ -67,7 +67,7 @@
             show: false
           }
         ]
-      }
+      };
     },
     computed: {
       totalPrice() { // 计算购物车总和
@@ -102,7 +102,7 @@
         }
       }
     }
-  }
+  };
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
