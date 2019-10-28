@@ -15,7 +15,7 @@
      </div>
     <!-- 路由外链 -->
     <!-- seller数据需要从 router-view 传入 -->
-    <router-view :seller="seller"></router-view>   
+    <router-view :seller="seller"></router-view>
   </div>
 </template>
 

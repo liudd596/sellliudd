@@ -52,7 +52,7 @@ const ERR_OK = 0;
 export default {
   props: {
     seller: {
-      type: Object   // 接收props 要指定传入的类型 type，vue的代码风格
+      type: Object // 接收props 要指定传入的类型 type，vue的代码风格
     }
   },
   data() {
@@ -62,11 +62,11 @@ export default {
       scrollY: 0
     };
   },
-//computed vs methods
-//我们可以使用 methods 来替代 computed，
-//效果上两个都是一样的，但是 computed 是基于它的依赖缓存，
-//只有相关依赖发生改变时才会重新取值。而使用 methods ，在重新渲染的时候，函数总会重新调用执行。
-  computed: {    
+// computed vs methods
+// 我们可以使用 methods 来替代 computed，
+// 效果上两个都是一样的，但是 computed 是基于它的依赖缓存，
+// 只有相关依赖发生改变时才会重新取值。而使用 methods ，在重新渲染的时候，函数总会重新调用执行。
+  computed: {
     currentIndex() { // 计算到达哪个区域的区间的时候的对应的索引值
       for (let i = 0; i < this.listHeight.length; i++) {
         let height1 = this.listHeight[i]; // 当前menu子块的高度
