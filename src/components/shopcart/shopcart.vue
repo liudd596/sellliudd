@@ -41,7 +41,7 @@
       },
       deliveryPrice: {
         type: Number,
-        default: 0 // 在组件还未传递值的时候，可以给一个默认值
+        default: 0 // 默认值，在组件还未传递值的时候
       },
       minPrice: {
         type: Number,
@@ -176,7 +176,7 @@
         .desc
           display : inline-block
           margin : 12px 0 0 12px
-          font-size : 16px
+          font-size : 10px
           font-weight : 700
           line-height : 24px
       .content-right
