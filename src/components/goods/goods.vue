@@ -28,6 +28,7 @@
                 <div class="price">
                   <span class="now">￥{{food.price}}</span><span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
+                <!-- 添加商品数量 -->
                 <div class="cartcontrol-wrapper">
                   <cartcontrol :food="food"></cartcontrol>
                 </div>
@@ -37,15 +38,15 @@
         </li>
       </ul>
     </div>
-    <!-- seller数据从app.vue传进来 -->
+    <!-- seller数据从app.vue传进来 购物车组件 -->
     <shopcart :selectFoods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
 import BScroll from 'better-scroll';
-import shopcart from '../../components/shopcart/shopcart';
-import cartcontrol from '../../components/cartcontrol/cartcontrol';
+import shopcart from '../../components/shopcart/shopcart'; // 购物车组件
+import cartcontrol from '../../components/cartcontrol/cartcontrol'; // 添加减少商品 组件
 
 const ERR_OK = 0;
 
@@ -91,7 +92,7 @@ export default {
       return foods;
     }
   },
-  created () { // 当这个组件被调用的时候，通过后端获得数据赋值给goods
+  created () { // 当这个组件被调用的时候，通过后端获得数据赋值给goods （左侧导航5种图标）
     this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee'];
 
     this.$http.get('/api/goods').then((response) => { // '/api/goods'请求的是data.json下的goods数组

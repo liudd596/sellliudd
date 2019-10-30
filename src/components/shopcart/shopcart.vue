@@ -6,7 +6,7 @@
             <div class="logo" :class="{'highlight':totalCount>0}">
               <span class="icon-shopping_cart" :class="{'highlight':totalCount>0}"></span>
             </div>
-            <div class="num">{{totalCount}}</div>
+            <div class="num" v-show="totalCount>0">{{totalCount}}</div>
           </div>
           <div class="price" :class="{'highlight':totalPrice>0}">￥{{totalPrice}}</div>
           <div class="desc">另需配送费￥{{deliveryPrice}}元</div>
@@ -17,6 +17,7 @@
           </div>
         </div>
       </div>
+      <!-- 定义小球 -->
       <div class="ball-container">
         <transition name="drop" v-for="(ball,index) in balls" v-show="ball.show" class="ball" :key="index">
           <div class="inner"></div>
@@ -28,29 +29,30 @@
 <script type="text/ecmascript-6">
   export default {
     props: {
-      selectFoods: { // 选择商品的数组
-        type: Array,
+      selectFoods: { // 保存了选择的商品的数组 从good.vue传过来
+        type: Array, // Array类型，下面的default是函数
         default() {
           return [
-            {
-              price: 40,
-              count: 1
-            }
+            // 当商品数量大于0时 （该部分是自己添加可以删掉，测试结算状态）
+            // {
+            //   price: 40,
+            //   count: 1
+            // }
           ];
         }
       },
-      deliveryPrice: {
+      deliveryPrice: { // 另需配送费
         type: Number,
         default: 0 // 默认值，在组件还未传递值的时候
       },
-      minPrice: {
+      minPrice: { // 起送价
         type: Number,
         default: 0
       }
     },
     data() {
       return {
-        balls: [
+        balls: [ // 数组 当前每个小球的状态
           {
             show: false
           },
@@ -69,7 +71,7 @@
         ]
       };
     },
-    computed: {
+    computed: { // computed计算属性
       totalPrice() { // 计算购物车总和
         let total = 0;
         this.selectFoods.forEach((food) => {
@@ -86,10 +88,10 @@
       },
       payDesc() {
         if (this.totalPrice === 0) {
-           return `￥${this.minPrice}元起送`;
+           return `￥${this.minPrice}元起送`; // es6反引号`${}`传数据 （不用+号拼 更方便）
         } else if (this.totalPrice < this.minPrice) {
           let diff = this.minPrice - this.totalPrice;
-          return `￥${diff}元起送`;
+          return `还差￥${diff}元起送`;
         } else {
           return '去结算';
         }
@@ -205,4 +207,6 @@
             width : 16px
             height: 16px
             border-radius: 50%
+            background :rgb(0,160,220)
+            transition: all 0.4s
 </style>

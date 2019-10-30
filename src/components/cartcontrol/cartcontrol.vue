@@ -1,11 +1,13 @@
 <template>
     <div class="cartcontrol">
+      <!-- cart-decrease 减少按钮 -->
       <transition name="move">
         <div class="cart-decrease" v-show="food.count>0" @click="decreaseCart">
           <div class="inner icon-remove_circle_outline"></div>
         </div>
       </transition>
       <div class="cart-count" v-show="food.count>0">{{food.count}}</div>
+      <!-- cart-add 增加按钮 -->
       <div class="cart-add icon-add_circle" @click="addCart"></div>
     </div>
 </template>
@@ -15,7 +17,7 @@
 
   export default {
     props: {
-      food: {
+      food: { // 调用cartcountrol的时候关联的是food,增加减少是对该food
         type: Object
       }
     },
@@ -60,12 +62,12 @@
         font-size : 24px
         color: rgb(0, 160, 220)
         transition : all 0.4s linear // 定义旋转过渡效果
-        transform : rotate(0)
+        transform : rotate(0deg)
     &.move-enter, &.move-leave
       opacity : 0
       transform : translate3D(24px, 0, 0)
       .inner
-        transform : rotate(180deg)
+        transform : rotate(360deg)
   .cart-count
     display : inline-block
     font-size : 10px
