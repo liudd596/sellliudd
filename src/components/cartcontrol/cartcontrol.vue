@@ -32,6 +32,7 @@
         } else {
           this.food.count++;
         }
+        this.$emit('cart-add', event.target); // 添加这句，提交'cart-add'事情给父组件，第二个是要传递的参数
       },
       decreaseCart(event) {
         if (!event._constructed) {

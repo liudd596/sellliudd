@@ -103,6 +103,11 @@
           return 'enough';
         }
       }
+    },
+    methods: {
+      drop(el) {
+        console.log(el);
+      }
     }
   };
 </script>

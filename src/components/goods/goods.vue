@@ -30,7 +30,7 @@
                 </div>
                 <!-- 添加商品数量 -->
                 <div class="cartcontrol-wrapper">
-                  <cartcontrol :food="food"></cartcontrol>
+                  <cartcontrol :food="food" v-on:cart-add="cartAdd"></cartcontrol>
                 </div>
               </div>
             </li>
@@ -39,7 +39,7 @@
       </ul>
     </div>
     <!-- seller数据从app.vue传进来 购物车组件 -->
-    <shopcart :selectFoods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
+    <shopcart ref="shopcart" :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
   </div>
 </template>
 
@@ -111,10 +111,15 @@ export default {
       if (!event._constructed) { // 去掉自带的click事件点击，即pc端直接返回
         return;
       }
-      let foodList = this.$refs.foodsWrapper.getElementsByClassName('food-list-hook');
+      let foodList = this.$els.foodsWrapper.getElementsByClassName('food-list-hook');
       // 类似jump to的功能,通过这个方法,跳转到指定的dom
       let el = foodList[index];
       this.foodsScroll.scrollToElement(el, 300);
+    },
+    cartAdd(el) {
+      this.$nextTick(() => {
+         this.$refs['shopcart'].drop(el);
+       });
     },
     _initScroll() { // 初始化scroll区域
       this.menuScrol = new BScroll(this.$refs.menuWrapper, {
@@ -144,6 +149,11 @@ export default {
   components: {
     shopcart,
     cartcontrol
+  },
+  events: {
+    'cart.add'(target) {
+      this._drop(target);
+    }
   }
 };
 </script>
