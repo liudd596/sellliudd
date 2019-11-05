@@ -31,6 +31,7 @@
                 <!-- 添加商品数量 -->
                 <div class="cartcontrol-wrapper">
                   <cartcontrol :food="food" v-on:cart-add="cartAdd"></cartcontrol>
+                  <!-- 用v-on:cart-add="cartAdd",表示监听传来的cart-add事件，监听到就调用cartAdd()函数处理 -->
                 </div>
               </div>
             </li>
@@ -118,7 +119,7 @@ export default {
     },
     cartAdd(el) {
       this.$nextTick(() => {
-         this.$refs['shopcart'].drop(el);
+         this.$refs['shopcart'].drop(el); // 调用shopcart组件的drop()函数
        });
     },
     _initScroll() { // 初始化scroll区域
